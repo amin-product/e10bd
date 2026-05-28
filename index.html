@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新建表单并快速生成布局预览</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --nav: #213f49;
+      --nav-dark: #1b3540;
+      --nav-active: #17333d;
+      --primary: #18313a;
+      --primary-hover: #18313a;
+      --line: #d8dde1;
+      --line-soft: #e9edf0;
+      --bg: #eef0f3;
+      --panel: #fff;
+      --text: #172b35;
+      --muted: #7a8790;
+      --danger: #d9534f;
+      --success: #18313a;
+      --focus: #18313a;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      font-size: 12px;
+      line-height: 1.5;
+      overflow: hidden;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app-shell,
+    .preview-page {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .topbar {
+      height: 51px;
+      background: var(--nav);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .profile {
+      width: 218px;
+      height: 51px;
+      padding: 7px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--nav-dark);
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e7c2b8, #617486);
+      border: 1px solid rgba(255, 255, 255, .55);
+      position: relative;
+    }
+
+    .avatar:before {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #f3d1c7;
+      top: 6px;
+      left: 10px;
+    }
+
+    .avatar:after {
+      content: "";
+      position: absolute;
+      width: 22px;
+      height: 11px;
+      border-radius: 12px 12px 5px 5px;
+      background: #2e3a4a;
+      left: 6px;
+      bottom: 5px;
+    }
+
+    .profile-name {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 17px;
+      max-width: 145px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .profile-sub {
+      font-size: 11px;
+      color: rgba(255, 255, 255, .85);
+      max-width: 145px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .top-nav {
+      flex: 1;
+      display: flex;
+      align-items: stretch;
+      height: 51px;
+    }
+
+    .top-nav-item {
+      min-width: 98px;
+      padding: 0 16px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 14px;
+      border-left: 1px solid rgba(255, 255, 255, .04);
+    }
+
+    .top-nav-item.active {
+      background: var(--nav-active);
+      font-weight: 600;
+    }
+
+    .top-actions {
+      height: 51px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 0 16px 0 12px;
+      font-size: 19px;
+    }
+
+    .badge-dot {
+      position: relative;
+    }
+
+    .badge-dot:after {
+      content: "24";
+      position: absolute;
+      top: -12px;
+      right: -12px;
+      min-width: 18px;
+      height: 18px;
+      line-height: 18px;
+      text-align: center;
+      border-radius: 10px;
+      background: #f24a4a;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .main-layout {
+      height: calc(100vh - 85px);
+      margin-top: 34px;
+      display: flex;
+    }
+
+    .prototype-notice {
+      position: fixed;
+      top: 51px;
+      left: 0;
+      right: 0;
+      z-index: 35;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 18px;
+      background: #fff8df;
+      border-bottom: 1px solid #ead99d;
+      color: #5d4a13;
+      font-size: 13px;
+    }
+
+    .prototype-notice-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #f1c550;
+      color: #5d4a13;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .sidebar {
+      width: 219px;
+      background: var(--nav);
+      color: #d9e5e9;
+      flex-shrink: 0;
+    }
+
+    .side-item {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 0 20px;
+      color: #e6f0f3;
+      font-size: 14px;
+      position: relative;
+    }
+
+    .side-item .chev {
+      margin-left: auto;
+      color: #afc2c8;
+      font-size: 18px;
+    }
+
+    .side-item.active {
+      background: var(--nav-active);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .side-item.active:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 36px;
+      background: #e8f0f3;
+    }
+
+    .side-group {
+      padding-top: 22px;
+    }
+
+    .sub-side {
+      height: 34px;
+      padding-left: 46px;
+      font-size: 14px;
+    }
+
+    .content {
+      flex: 1;
+      min-width: 0;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .list-toolbar {
+      height: 51px;
+      padding: 0 16px 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #dde2e5;
+    }
+
+    .module-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #243b45;
+      font-weight: 600;
+    }
+
+    .module-icon {
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #18313a;
+      border: 1px solid #18313a;
+      background: rgba(24,49,58,0.08);
+      font-size: 15px;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+    }
+
+    .btn {
+      height: 31px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      background: #fff;
+      color: #263941;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      border-color: #b7c3c9;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+
+    .guide-target {
+      position: relative;
+      z-index: 3;
+      box-shadow: 0 0 0 3px rgba(24, 49, 58, .22), 0 0 16px rgba(24, 49, 58, .38);
+    }
+
+    .create-guide {
+      position: absolute;
+      top: 39px;
+      left: 0;
+      z-index: 4;
+      min-width: 150px;
+      padding: 8px 12px;
+      color: #fff;
+      background: rgba(24, 49, 58, .96);
+      border: 1px solid rgba(255, 255, 255, .18);
+      border-radius: 6px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .22);
+      white-space: nowrap;
+    }
+
+    .create-guide:before {
+      content: "";
+      position: absolute;
+      top: -6px;
+      left: 22px;
+      width: 10px;
+      height: 10px;
+      background: rgba(24, 49, 58, .96);
+      border-left: 1px solid rgba(255, 255, 255, .18);
+      border-top: 1px solid rgba(255, 255, 255, .18);
+      transform: rotate(45deg);
+    }
+
+    .btn-disabled {
+      color: #a7b0b7;
+      background: #f3f5f6;
+      border-color: #e3e7ea;
+      cursor: default;
+    }
+
+    .search-box {
+      height: 31px;
+      width: 199px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 8px;
+      background: #fff;
+      border: 1px solid var(--line-soft);
+      color: #b2bbc1;
+    }
+
+    .search-box input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      color: #48565e;
+    }
+
+    .table-wrap {
+      margin: 13px 16px 0 17px;
+      background: #fff;
+      border: 1px solid #dde2e5;
+      height: calc(100vh - 149px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .form-table th,
+    .form-table td {
+      height: 40px;
+      border-bottom: 1px solid #edf0f2;
+      padding: 0 10px;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #172b35;
+    }
+
+    .form-table th {
+      height: 39px;
+      font-weight: 600;
+      color: #111;
+      background: #fff;
+    }
+
+    .checkbox {
+      width: 14px;
+      height: 14px;
+      display: inline-block;
+      border: 1px solid #bfc7cc;
+      background: #fff;
+      vertical-align: middle;
+    }
+
+    .switch {
+      display: inline-block;
+      width: 37px;
+      height: 20px;
+      border-radius: 10px;
+      background: var(--primary);
+      position: relative;
+      vertical-align: middle;
+    }
+
+    .switch.off {
+      background: #a2afb6;
+    }
+
+    .switch:after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #fff;
+    }
+
+    .switch.off:after {
+      right: auto;
+      left: 2px;
+    }
+
+    .pager {
+      position: absolute;
+      right: 18px;
+      bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: #6f7d85;
+    }
+
+    .page-size,
+    .page-input {
+      height: 26px;
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 0 9px;
+      color: #222;
+      min-width: 78px;
+    }
+
+    .page-input {
+      width: 45px;
+      min-width: 45px;
+      text-align: center;
+    }
+
+    .modal-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      background: rgba(0, 0, 0, .36);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal {
+      width: min(1120px, calc(100vw - 80px));
+      height: min(750px, calc(100vh - 58px));
+      background: #fff;
+      border: 1px solid #bfc9ce;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, .23);
+      display: flex;
+      flex-direction: column;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .modal-head {
+      height: 46px;
+      border-bottom: 1px solid var(--line-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+    }
+
+    .modal-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #172b35;
+    }
+
+    .modal-close {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      background: transparent;
+      color: #79868d;
+      font-size: 20px;
+    }
+
+    .modal-body {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: #f6f8f9;
+    }
+
+    .basic-form {
+      background: #fff;
+      padding: 15px 18px 12px;
+      border-bottom: 1px solid var(--line-soft);
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .form-field {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-field label {
+      width: 72px;
+      color: #263941;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .required {
+      color: var(--danger);
+      margin-right: 3px;
+    }
+
+    .input,
+    .select,
+    .textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      background: #fff;
+      color: #1f323c;
+      outline: 0;
+      transition: border-color .15s;
+    }
+
+    .input,
+    .select {
+      height: 32px;
+      padding: 0 9px;
+    }
+
+    .textarea {
+      min-height: 66px;
+      padding: 8px 9px;
+      resize: vertical;
+    }
+
+    .input:focus,
+    .select:focus,
+    .textarea:focus {
+      border-color: var(--focus);
+    }
+
+    .builder {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 0;
+    }
+
+    .object-panel {
+      border-right: 1px solid var(--line);
+      background: #fff;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-head {
+      height: 42px;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--line-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 700;
+    }
+
+    .mini-btn {
+      width: 24px;
+      height: 24px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 2px;
+      color: #18313a;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    .object-list {
+      padding: 9px 0;
+      overflow: auto;
+    }
+
+    .object-row {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px 0 18px;
+      gap: 8px;
+      color: #263941;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    .object-row:hover {
+      background: rgba(24,49,58,0.05);
+    }
+
+    .object-row.active {
+      background: rgba(24,49,58,0.08);
+      border-left-color: #18313a;
+      color: #18313a;
+      font-weight: 700;
+    }
+
+    .object-row.child {
+      padding-left: 38px;
+    }
+
+    .object-row .folder {
+      color: #60737d;
+      font-size: 13px;
+    }
+
+    .object-name {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .delete-object {
+      display: none;
+      width: 22px;
+      height: 22px;
+      border: 0;
+      background: transparent;
+      color: #c03935;
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    .object-row:hover .delete-object {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .inline-add {
+      padding: 8px 12px 8px 38px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      background: #fafbfc;
+      border-top: 1px solid var(--line-soft);
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .inline-add-actions {
+      display: flex;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    .small-btn {
+      height: 25px;
+      padding: 0 9px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 2px;
+      color: #263941;
+    }
+
+    .small-btn.primary {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .fields-panel {
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: #f6f8f9;
+    }
+
+    .fields-head {
+      height: 42px;
+      padding: 0 16px;
+      background: #fff;
+      border-bottom: 1px solid var(--line-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .fields-title {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .field-list {
+      padding: 13px 16px 18px;
+      overflow: auto;
+    }
+
+    .field-row-wrap {
+      margin-bottom: 8px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .field-row-wrap.dragging {
+      opacity: .55;
+      border-color: #18313a;
+    }
+
+    .field-row {
+      min-height: 44px;
+      display: grid;
+      grid-template-columns: 32px minmax(180px, 1fr) 190px 38px 64px;
+      gap: 9px;
+      align-items: center;
+      padding: 6px 10px;
+    }
+
+    .drag-handle {
+      height: 30px;
+      color: #8a969c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      font-size: 18px;
+      user-select: none;
+    }
+
+    .delete-btn {
+      height: 28px;
+      width: 30px;
+      border: 1px solid #e0b6b4;
+      background: #fff;
+      color: #c03935;
+      border-radius: 2px;
+      font-size: 16px;
+    }
+
+    .move-stack {
+      display: flex;
+      gap: 4px;
+      justify-content: flex-end;
+    }
+
+    .move-btn {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #52636d;
+      border-radius: 2px;
+    }
+
+    .option-area {
+      margin: 0 10px 10px 51px;
+      padding: 10px 12px;
+      background: #f8fafb;
+      border-top: 1px dashed #ccd5da;
+    }
+
+    .option-title {
+      color: #53636c;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 7px;
+      max-width: 460px;
+    }
+
+    .option-row .input {
+      height: 29px;
+    }
+
+    .option-row button {
+      width: 27px;
+      height: 27px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #b13a36;
+      border-radius: 2px;
+    }
+
+    .add-option {
+      height: 27px;
+      padding: 0 10px;
+      border: 1px dashed #91a2aa;
+      background: #fff;
+      color: #18313a;
+      border-radius: 2px;
+    }
+
+    .empty-tip {
+      height: 150px;
+      border: 1px dashed #cdd6dc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #8c99a1;
+      background: #fff;
+    }
+
+    .modal-foot {
+      height: 55px;
+      border-top: 1px solid var(--line-soft);
+      background: #fff;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      padding: 0 18px;
+    }
+
+    .toast {
+      position: fixed;
+      z-index: 40;
+      top: 66px;
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: 260px;
+      height: 38px;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #fff;
+      border: 1px solid #d8dde1;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .18);
+      color: #18313a;
+    }
+
+    .toast:before {
+      content: "✓";
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--success);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .error-msg {
+      color: var(--danger);
+      margin-left: 82px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .has-error .input {
+      border-color: var(--danger);
+    }
+
+    .has-error .error-msg {
+      display: block;
+    }
+
+    .preview-page {
+      position: fixed;
+      top: 85px;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: auto;
+      height: auto;
+      z-index: 18;
+      background: rgba(0, 0, 0, .08);
+      overflow: hidden;
+    }
+
+    .preview-drawer {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: min(60vw, 920px);
+      min-width: 720px;
+      height: 100%;
+      background: #f0f2f4;
+      border-left: 1px solid #d8dde1;
+      box-shadow: -2px 0 10px rgba(0, 0, 0, .08);
+      transform: translateX(100%);
+      transition: transform .26s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-page.open .preview-drawer {
+      transform: translateX(0);
+    }
+
+    .preview-topbar {
+      height: 50px;
+      background: #fff;
+      border-bottom: 1px solid #d8dde1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      color: #111;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .preview-head-main {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .preview-form-title {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 16px;
+      font-weight: 700;
+      color: #111;
+    }
+
+    .preview-form-icon {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #6aa1ff;
+      border-radius: 2px;
+      color: #2f76e8;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      background: #f7fbff;
+      flex-shrink: 0;
+    }
+
+    .preview-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .preview-action-btn {
+      height: 30px;
+      min-width: 58px;
+      padding: 0 13px;
+      border: 1px solid #d8dde1;
+      border-radius: 2px;
+      background: #fff;
+      color: #303d44;
+    }
+
+    .preview-action-btn.primary {
+      background: #18313a;
+      border-color: #18313a;
+      color: #fff;
+    }
+
+    .preview-icon-btn {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      background: transparent;
+      color: #7a8790;
+      font-size: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .preview-close {
+      width: 30px;
+      height: 30px;
+      border: 0;
+      background: transparent;
+      color: #6f7d85;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .preview-bg {
+      background: #f0f2f4;
+      padding: 16px;
+      overflow: auto;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .preview-card {
+      min-height: 408px;
+      background: #fff;
+      border: 1px solid #dfe3e6;
+      box-shadow: none;
+      padding: 34px 20px 30px;
+      position: relative;
+    }
+
+    .preview-inner-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: #000;
+      margin-bottom: 36px;
+    }
+
+    .generated-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 0;
+      row-gap: 0;
+      padding-right: 0;
+      border-top: 1px solid #d9dee2;
+      border-left: 1px solid #d9dee2;
+    }
+
+    .preview-field {
+      display: grid;
+      grid-template-columns: 118px minmax(0, 1fr);
+      gap: 0;
+      align-items: stretch;
+      min-height: 42px;
+      border-right: 1px solid #d9dee2;
+      border-bottom: 1px solid #d9dee2;
+    }
+
+    .preview-field label {
+      display: flex;
+      align-items: center;
+      color: #000;
+      margin-bottom: 0;
+      font-weight: 700;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      background: #f0f2f5;
+      border-right: 1px solid #d9dee2;
+      padding: 0 16px;
+    }
+
+    .preview-input,
+    .preview-textarea,
+    .radio-box {
+      width: 100%;
+      border: 0;
+      border-radius: 0;
+      background: #fff;
+      color: #1c3039;
+    }
+
+    .preview-input {
+      height: 40px;
+      padding: 0 12px;
+    }
+
+    .preview-textarea {
+      height: 66px;
+      padding: 9px 13px;
+      resize: none;
+    }
+
+    .radio-box {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      padding: 0 8px;
+    }
+
+    .radio-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: #000;
+    }
+
+    .radio-circle {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid #c6ced3;
+      background: #fff;
+    }
+
+    .radio-circle.square {
+      border-radius: 2px;
+    }
+
+    .detail-section {
+      margin-top: 24px;
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .detail-head {
+      height: 31px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .detail-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    .detail-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #586871;
+    }
+
+    .detail-add {
+      height: 30px;
+      min-width: 66px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 2px;
+      color: #596872;
+    }
+
+    .detail-table {
+      border: 1px solid #d6dce0;
+    }
+
+    .detail-table th,
+    .detail-table td {
+      height: 40px;
+      border-right: 1px solid #d6dce0;
+      border-bottom: 1px solid #d6dce0;
+      padding: 0 18px;
+      text-align: left;
+      font-weight: 400;
+    }
+
+    .detail-table th {
+      background: #f0f2f5;
+      color: #1f3039;
+    }
+
+    .detail-table td {
+      color: #1c3039;
+    }
+
+    .detail-table th:first-child,
+    .detail-table td:first-child {
+      width: 66px;
+      text-align: center;
+      padding: 0;
+    }
+
+    .detail-table .sum-cell {
+      color: #263b45;
+      background: #fff;
+    }
+
+    .detail-cell-input {
+      width: 100%;
+      height: 30px;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #1c3039;
+    }
+
+    .detail-pager {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      color: #6f7d85;
+      border: 1px solid #d6dce0;
+      border-top: 0;
+      padding: 0 10px;
+      background: #fff;
+    }
+
+    @media (max-width: 920px) {
+      .sidebar {
+        width: 178px;
+      }
+
+      .profile {
+        width: 178px;
+      }
+
+      .top-nav-item {
+        min-width: 76px;
+        padding: 0 10px;
+      }
+
+      .modal {
+        width: calc(100vw - 24px);
+        height: calc(100vh - 24px);
+      }
+
+      .builder {
+        grid-template-columns: 220px 1fr;
+      }
+
+      .basic-form,
+      .generated-form {
+        grid-template-columns: 1fr;
+      }
+
+      .field-row {
+        grid-template-columns: 28px minmax(120px, 1fr) 140px 34px 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="listPage" class="app-shell">
+    <header class="topbar">
+      <div class="profile">
+        <div class="avatar" aria-hidden="true"></div>
+        <div>
+          <div class="profile-name">闵瑜婷⌄</div>
+          <div class="profile-sub">Release表单引擎研发部...</div>
+        </div>
+      </div>
+      <nav class="top-nav" aria-label="顶部导航">
+        <div class="top-nav-item">⌂</div>
+        <div class="top-nav-item">☰ 任务</div>
+        <div class="top-nav-item">◇ 流程</div>
+        <div class="top-nav-item active">▦ 表单</div>
+        <div class="top-nav-item">更多应用⌄</div>
+      </nav>
+      <div class="top-actions" aria-hidden="true">
+        <span>⌕</span>
+        <span>⊕</span>
+        <span>?</span>
+        <span class="badge-dot">▤</span>
+        <span>♧</span>
+        <span class="brand">eteams⌄</span>
+      </div>
+    </header>
+
+    <div class="prototype-notice">
+      <span class="prototype-notice-icon">!</span>
+      <span>请当前为交互示意稿，界面UI与系统实际效果略有差异，请以系统效果为准。</span>
+    </div>
+
+    <main class="main-layout">
+      <aside class="sidebar">
+        <div class="side-group">
+          <div class="side-item"><span>▤</span><span>数据记录</span><span class="chev">›</span></div>
+          <div class="side-item active sub-side">表单列表</div>
+          <div class="side-item sub-side">待填写上报</div>
+          <div class="side-item sub-side">已填写上报</div>
+          <div class="side-item sub-side">关注的上报</div>
+          <div class="side-item"><span>◩</span><span>网上调查</span><span class="chev">⌄</span></div>
+          <div class="side-item"><span>☷</span><span>流程</span><span class="chev">⌄</span></div>
+          <div class="side-item"><span>◈</span><span>投票</span></div>
+          <div class="side-item"><span>◆</span><span>权限申请列表</span></div>
+          <div class="side-item"><span>☞</span><span>上报意见及评论</span></div>
+          <div class="side-item"><span>⌂</span><span>回收站</span></div>
+          <div class="side-item"><span>⚙</span><span>设置</span></div>
+        </div>
+      </aside>
+
+      <section class="content">
+        <div class="list-toolbar">
+          <div class="module-title"><span class="module-icon">▦</span> 表单列表</div>
+          <div class="toolbar-actions">
+            <button id="openCreate" class="btn btn-primary guide-target">+ 新建表单</button>
+            <div id="createGuide" class="create-guide">点击这里新建表单</div>
+            <button class="btn btn-disabled">批量删除</button>
+            <label class="search-box">
+              <span>⌕</span>
+              <input type="text" placeholder="请输入表单名称">
+              <span>⌯</span>
+            </label>
+            <span style="font-size: 20px; color: #7d888f;">⋮</span>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="form-table">
+            <colgroup>
+              <col style="width: 52px">
+              <col style="width: 38%">
+              <col style="width: 8%">
+              <col style="width: 10%">
+              <col style="width: 8%">
+              <col style="width: 12%">
+              <col style="width: 8%">
+              <col style="width: 18%">
+            </colgroup>
+            <thead>
+              <tr>
+                <th><span class="checkbox"></span></th>
+                <th>表单名称</th>
+                <th>创建人</th>
+                <th>创建日期</th>
+                <th>启用</th>
+                <th>表单类型</th>
+                <th>类型</th>
+                <th>数据库表名称</th>
+              </tr>
+            </thead>
+            <tbody id="formRows"></tbody>
+          </table>
+          <div class="pager">
+            <span>共270条</span>
+            <span>‹</span>
+            <span>‹</span>
+            <strong>1/14</strong>
+            <span>›</span>
+            <span>›</span>
+            <span class="page-size">20 条/页⌄</span>
+            <span>前往</span>
+            <span class="page-input">1</span>
+            <span>页</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="previewPage" class="preview-page hidden">
+    <aside class="preview-drawer">
+      <header class="preview-topbar">
+        <div class="preview-head-main">
+          <span class="preview-form-icon">EB</span>
+          <div id="previewFormTitle" class="preview-form-title">表单预览</div>
+        </div>
+        <div class="preview-actions">
+          <button class="preview-action-btn primary">保存</button>
+          <button class="preview-action-btn">保存并新建</button>
+          <button class="preview-action-btn">暂存</button>
+          <button class="preview-icon-btn" title="最大化">↗</button>
+          <button id="closePreview" class="preview-icon-btn" aria-label="关闭预览">×</button>
+        </div>
+      </header>
+
+      <div class="preview-bg">
+        <div class="preview-card">
+          <div id="previewInnerTitle" class="preview-inner-title">表单预览</div>
+          <div id="generatedForm" class="generated-form"></div>
+          <section id="detailPreview" class="detail-section"></section>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div id="createModal" class="modal-mask hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-head">
+        <div id="modalTitle" class="modal-title">新建表单</div>
+        <button id="closeModal" class="modal-close" aria-label="关闭">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="basic-form">
+          <div id="nameFieldWrap">
+            <div class="form-field">
+              <label for="formName"><span class="required">*</span>表单名称</label>
+              <input id="formName" class="input" type="text" placeholder="请输入表单名称">
+            </div>
+            <div class="error-msg">请输入表单名称</div>
+          </div>
+        </div>
+
+        <div class="builder">
+          <aside class="object-panel">
+            <div class="panel-head">
+              <span>数据对象</span>
+              <button id="showAddDetail" class="mini-btn" title="新增明细表">+</button>
+            </div>
+            <div id="objectList" class="object-list"></div>
+          </aside>
+
+          <section class="fields-panel">
+            <div class="fields-head">
+              <div id="fieldsTitle" class="fields-title">主表字段 1</div>
+              <button id="addField" class="btn btn-primary">+ 新增字段</button>
+            </div>
+            <div id="fieldList" class="field-list"></div>
+          </section>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button id="cancelCreate" class="btn">取消</button>
+        <button id="confirmCreate" class="btn btn-primary">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden">新建成功，可开始使用表单</div>
+
+  <script>
+    const optionTypes = ["单选框", "复选框"];
+    const fieldTypes = ["单行文本", "数字", "日期", "单选框", "复选框", "人员选择", "附件", "图片上传", "更多"];
+
+    const state = {
+      activeObjectId: "main",
+      addingDetail: false,
+      formTitle: "",
+      detailRows: 1,
+      objects: [
+        {
+          id: "main",
+          name: "主表",
+          kind: "main",
+          fields: [
+            { id: makeId(), name: "", type: "单行文本", options: [] }
+          ]
+        }
+      ]
+    };
+
+    const sampleRows = [
+      ["新建表单测试", "闵瑜婷", "2026-05-27", true, "自定义独立表", "协作表", "ft_xjbdcs"],
+      ["函数公式2", "谢凯薇", "2026-05-27", true, "自定义独立表", "协作表", "ft_hsgs2"],
+      ["字段显示格式-单元格生效各种类型", "张伟", "2026-05-26", true, "自定义独立表", "协作表", "ft_1273848108620775424"],
+      ["明细表字段嵌套子级明细表需求2", "闵瑜婷", "2026-05-26", true, "自定义独立表", "协作表", "ft_mxzbdqtzjmxbxq2"],
+      ["新增【表单标题】、【布局标题】系统参数", "罗宝兰", "2026-05-26", true, "自定义独立表", "协作表", "ft_xzbdbtbjbtztcs"],
+      ["明细表字段内嵌明细表需求", "闵瑜婷", "2026-05-26", true, "自定义独立表", "协作表", "ft_mxzbdnqmxbxq"],
+      ["函数公式", "谢凯薇", "2026-05-26", true, "自定义独立表", "协作表", "ft_hsgs"],
+      ["表格式分组", "闵瑜婷", "2026-05-26", true, "自定义独立表", "协作表", "ft_bgsfz"],
+      ["日常费用报销单1779764657441", "闵瑜婷", "2026-05-26", true, "自定义独立表", "协作表", "ft_1273735503116738560"],
+      ["明细表空行验证", "闵瑜婷", "2026-05-26", true, "自定义独立表", "协作表", "ft_mxbkxyz"],
+      ["0601基线各项优化测试", "罗宝兰", "2026-05-26", true, "自定义独立表", "协作表", "ft_jxgxyhcs"],
+      ["字段显示格式而且excel历史数据", "赵沁", "2026-05-25", true, "自定义独立表", "协作表", "ft_zdxsgseqexclssj"],
+      ["明细表嵌套+行内展示行工具栏列合并问题", "罗宝兰", "2026-05-25", false, "自定义独立表", "协作表", "ft_mxbqtnzsxgjlhbwt"],
+      ["浏览数据定义问题复现", "马佰潇", "2026-05-25", true, "自定义独立表", "协作表", "ft_ljsjdywtfx"],
+      ["设置文本框边框，移动菜单选、复选框无需显示文本框", "罗宝兰", "2026-05-22", false, "自定义独立表", "协作表", "ft_szwbkbkyddddxfxkxxx..."],
+      ["导出HTML-行政区域", "郭文昌", "2026-05-21", true, "自定义独立表", "协作表", "ft_dchtmxzqy"],
+      ["验证新版函数编辑器问题", "谢凯薇", "2026-05-21", true, "自定义独立表", "协作表", "ft_yzxbhsbjqwt"]
+    ];
+
+    const els = {
+      formRows: document.getElementById("formRows"),
+      openCreate: document.getElementById("openCreate"),
+      createModal: document.getElementById("createModal"),
+      closeModal: document.getElementById("closeModal"),
+      cancelCreate: document.getElementById("cancelCreate"),
+      confirmCreate: document.getElementById("confirmCreate"),
+      formName: document.getElementById("formName"),
+      nameFieldWrap: document.getElementById("nameFieldWrap"),
+      objectList: document.getElementById("objectList"),
+      fieldList: document.getElementById("fieldList"),
+      fieldsTitle: document.getElementById("fieldsTitle"),
+      showAddDetail: document.getElementById("showAddDetail"),
+      addField: document.getElementById("addField"),
+      toast: document.getElementById("toast"),
+      listPage: document.getElementById("listPage"),
+      previewPage: document.getElementById("previewPage"),
+      previewFormTitle: document.getElementById("previewFormTitle"),
+      previewInnerTitle: document.getElementById("previewInnerTitle"),
+      closePreview: document.getElementById("closePreview"),
+      generatedForm: document.getElementById("generatedForm"),
+      detailPreview: document.getElementById("detailPreview"),
+      createGuide: document.getElementById("createGuide")
+    };
+
+    function makeId() {
+      return "id-" + Math.random().toString(36).slice(2, 10);
+    }
+
+    function getActiveObject() {
+      return state.objects.find(item => item.id === state.activeObjectId) || state.objects[0];
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function renderTableRows() {
+      els.formRows.innerHTML = sampleRows.map((row, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td title="${escapeHtml(row[0])}">${escapeHtml(row[0])}</td>
+          <td>${escapeHtml(row[1])}</td>
+          <td>${escapeHtml(row[2])}</td>
+          <td><span class="switch ${row[3] ? "" : "off"}"></span></td>
+          <td>${escapeHtml(row[4])}</td>
+          <td>${escapeHtml(row[5])}</td>
+          <td title="${escapeHtml(row[6])}">${escapeHtml(row[6])}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderObjects() {
+      const details = state.objects.filter(item => item.kind === "detail");
+      const main = state.objects.find(item => item.kind === "main");
+      let html = `
+        <div class="object-row ${state.activeObjectId === main.id ? "active" : ""}" data-id="${main.id}">
+          <span class="folder">▣</span><span class="object-name">${escapeHtml(main.name)}</span>
+        </div>
+        <div class="object-row" style="cursor:default;">
+          <span class="folder">▾</span><span class="object-name">明细表</span>
+        </div>
+      `;
+
+      html += details.map(item => `
+        <div class="object-row child ${state.activeObjectId === item.id ? "active" : ""}" data-id="${item.id}">
+          <span class="folder">□</span><span class="object-name">${escapeHtml(item.name)}</span>
+          <button class="delete-object" data-delete-id="${item.id}" title="删除明细表">×</button>
+        </div>
+      `).join("");
+
+      if (state.addingDetail) {
+        html += `
+          <div class="inline-add">
+            <input id="newDetailName" class="input" type="text" placeholder="请输入明细表名称">
+            <div class="inline-add-actions">
+              <button id="cancelAddDetail" class="small-btn">取消</button>
+              <button id="confirmAddDetail" class="small-btn primary">确认</button>
+            </div>
+          </div>
+        `;
+      }
+
+      els.objectList.innerHTML = html;
+      els.objectList.querySelectorAll(".object-row[data-id]").forEach(row => {
+        row.addEventListener("click", () => {
+          state.activeObjectId = row.dataset.id;
+          state.addingDetail = false;
+          renderBuilder();
+        });
+      });
+
+      els.objectList.querySelectorAll(".delete-object").forEach(button => {
+        button.addEventListener("click", event => {
+          event.stopPropagation();
+          const id = button.dataset.deleteId;
+          state.objects = state.objects.filter(item => item.id !== id);
+          if (state.activeObjectId === id) {
+            state.activeObjectId = "main";
+          }
+          renderBuilder();
+        });
+      });
+
+      const confirm = document.getElementById("confirmAddDetail");
+      const cancel = document.getElementById("cancelAddDetail");
+      const input = document.getElementById("newDetailName");
+
+      if (confirm && input) {
+        input.focus();
+        confirm.addEventListener("click", addDetailObject);
+        input.addEventListener("keydown", event => {
+          if (event.key === "Enter") addDetailObject();
+          if (event.key === "Escape") {
+            state.addingDetail = false;
+            renderObjects();
+          }
+        });
+      }
+
+      if (cancel) {
+        cancel.addEventListener("click", () => {
+          state.addingDetail = false;
+          renderObjects();
+        });
+      }
+    }
+
+    function addDetailObject() {
+      const input = document.getElementById("newDetailName");
+      const name = input.value.trim();
+      if (!name) {
+        input.focus();
+        input.style.borderColor = "var(--danger)";
+        return;
+      }
+      const newObject = {
+        id: makeId(),
+        name,
+        kind: "detail",
+        fields: [
+          { id: makeId(), name: "", type: "单行文本", options: [] }
+        ]
+      };
+      state.objects.push(newObject);
+      state.activeObjectId = newObject.id;
+      state.addingDetail = false;
+      renderBuilder();
+    }
+
+    function addFieldToObject(object, shouldFocus) {
+      object.fields.push({
+        id: makeId(),
+        name: "",
+        type: "单行文本",
+        options: []
+      });
+      renderFields();
+      if (shouldFocus) {
+        const inputs = els.fieldList.querySelectorAll(".field-name");
+        if (inputs.length) inputs[inputs.length - 1].focus();
+      }
+    }
+
+    function renderFields() {
+      const object = getActiveObject();
+      const count = object.fields.length;
+      els.fieldsTitle.textContent = object.kind === "main" ? `主表字段 ${count}` : `明细表：${object.name} ${count}`;
+
+      if (!count) {
+        els.fieldList.innerHTML = `<div class="empty-tip">暂无字段，点击右上角“+ 新增字段”开始配置</div>`;
+        return;
+      }
+
+      els.fieldList.innerHTML = object.fields.map((field, index) => {
+        const typeOptions = fieldTypes.map(type => `
+          <option value="${type}" ${type === field.type ? "selected" : ""}>${type}</option>
+        `).join("");
+
+        const optionsArea = optionTypes.includes(field.type) ? `
+          <div class="option-area">
+            <div class="option-title">选项设置</div>
+            ${(field.options.length ? field.options : ["选项1", "选项2", "选项3"]).map((option, optionIndex) => `
+              <div class="option-row">
+                <input class="input option-input" data-field-id="${field.id}" data-option-index="${optionIndex}" type="text" value="${escapeHtml(option)}" placeholder="请输入选项">
+                <button data-field-id="${field.id}" data-option-index="${optionIndex}" class="delete-option" title="删除选项">×</button>
+              </div>
+            `).join("")}
+            <button data-field-id="${field.id}" class="add-option">+ 添加选项</button>
+          </div>
+        ` : "";
+
+        return `
+          <div class="field-row-wrap" draggable="true" data-field-id="${field.id}">
+            <div class="field-row">
+              <div class="drag-handle" title="拖拽排序">☰</div>
+              <input class="input field-name" data-field-id="${field.id}" type="text" value="${escapeHtml(field.name)}" placeholder="请输入字段名称">
+              <select class="select field-type" data-field-id="${field.id}">
+                ${typeOptions}
+              </select>
+              <button class="delete-btn" data-field-id="${field.id}" title="删除字段">×</button>
+              <div class="move-stack">
+                <button class="move-btn" data-move="up" data-field-id="${field.id}" title="上移" ${index === 0 ? "disabled" : ""}>↑</button>
+                <button class="move-btn" data-move="down" data-field-id="${field.id}" title="下移" ${index === object.fields.length - 1 ? "disabled" : ""}>↓</button>
+              </div>
+            </div>
+            ${optionsArea}
+          </div>
+        `;
+      }).join("");
+
+      bindFieldEvents();
+    }
+
+    function bindFieldEvents() {
+      const object = getActiveObject();
+
+      els.fieldList.querySelectorAll(".field-name").forEach(input => {
+        input.addEventListener("input", () => {
+          const field = object.fields.find(item => item.id === input.dataset.fieldId);
+          if (field) field.name = input.value;
+        });
+        input.addEventListener("keydown", event => {
+          if (event.key !== "Enter" || !input.value.trim()) return;
+          event.preventDefault();
+          const field = object.fields.find(item => item.id === input.dataset.fieldId);
+          if (field) field.name = input.value;
+          addFieldToObject(object, true);
+        });
+      });
+
+      els.fieldList.querySelectorAll(".field-type").forEach(select => {
+        select.addEventListener("change", () => {
+          const field = object.fields.find(item => item.id === select.dataset.fieldId);
+          if (!field) return;
+          field.type = select.value;
+          if (optionTypes.includes(field.type) && field.options.length === 0) {
+            field.options = ["选项1", "选项2", "选项3"];
+          }
+          if (!optionTypes.includes(field.type)) {
+            field.options = [];
+          }
+          renderFields();
+        });
+      });
+
+      els.fieldList.querySelectorAll(".delete-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          object.fields = object.fields.filter(item => item.id !== button.dataset.fieldId);
+          renderFields();
+        });
+      });
+
+      els.fieldList.querySelectorAll(".move-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          const index = object.fields.findIndex(item => item.id === button.dataset.fieldId);
+          const targetIndex = button.dataset.move === "up" ? index - 1 : index + 1;
+          if (index < 0 || targetIndex < 0 || targetIndex >= object.fields.length) return;
+          const [field] = object.fields.splice(index, 1);
+          object.fields.splice(targetIndex, 0, field);
+          renderFields();
+        });
+      });
+
+      els.fieldList.querySelectorAll(".option-input").forEach(input => {
+        input.addEventListener("input", () => {
+          const field = object.fields.find(item => item.id === input.dataset.fieldId);
+          if (!field) return;
+          field.options[Number(input.dataset.optionIndex)] = input.value;
+        });
+      });
+
+      els.fieldList.querySelectorAll(".delete-option").forEach(button => {
+        button.addEventListener("click", () => {
+          const field = object.fields.find(item => item.id === button.dataset.fieldId);
+          if (!field) return;
+          field.options.splice(Number(button.dataset.optionIndex), 1);
+          renderFields();
+        });
+      });
+
+      els.fieldList.querySelectorAll(".add-option").forEach(button => {
+        button.addEventListener("click", () => {
+          const field = object.fields.find(item => item.id === button.dataset.fieldId);
+          if (!field) return;
+          field.options.push(`选项${field.options.length + 1}`);
+          renderFields();
+        });
+      });
+
+      bindDragSort(object);
+    }
+
+    function bindDragSort(object) {
+      let draggingId = null;
+      els.fieldList.querySelectorAll(".field-row-wrap").forEach(row => {
+        row.addEventListener("dragstart", event => {
+          draggingId = row.dataset.fieldId;
+          row.classList.add("dragging");
+          event.dataTransfer.effectAllowed = "move";
+        });
+
+        row.addEventListener("dragend", () => {
+          row.classList.remove("dragging");
+          draggingId = null;
+        });
+
+        row.addEventListener("dragover", event => {
+          event.preventDefault();
+          if (!draggingId || draggingId === row.dataset.fieldId) return;
+          const fromIndex = object.fields.findIndex(item => item.id === draggingId);
+          const toIndex = object.fields.findIndex(item => item.id === row.dataset.fieldId);
+          if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex) return;
+          const [field] = object.fields.splice(fromIndex, 1);
+          object.fields.splice(toIndex, 0, field);
+          renderFields();
+        });
+      });
+    }
+
+    function renderBuilder() {
+      renderObjects();
+      renderFields();
+    }
+
+    function openModal() {
+      els.openCreate.classList.remove("guide-target");
+      els.createGuide.classList.add("hidden");
+      els.createModal.classList.remove("hidden");
+      els.formName.focus();
+      renderBuilder();
+    }
+
+    function closeModal() {
+      els.createModal.classList.add("hidden");
+      els.nameFieldWrap.classList.remove("has-error");
+    }
+
+    function showToast() {
+      els.toast.classList.remove("hidden");
+      setTimeout(() => els.toast.classList.add("hidden"), 1200);
+    }
+
+    function openPreviewDrawer() {
+      els.previewPage.classList.remove("hidden");
+      requestAnimationFrame(() => {
+        els.previewPage.classList.add("open");
+      });
+    }
+
+    function closePreviewDrawer() {
+      els.previewPage.classList.remove("open");
+      setTimeout(() => {
+        els.previewPage.classList.add("hidden");
+      }, 260);
+    }
+
+    function renderPreview() {
+      const main = state.objects.find(item => item.kind === "main");
+      const detail = state.objects.find(item => item.kind === "detail");
+      const fields = main.fields.filter(field => field.name.trim());
+      els.previewFormTitle.textContent = state.formTitle || "表单预览";
+      els.previewInnerTitle.textContent = state.formTitle || "表单预览";
+
+      els.generatedForm.innerHTML = fields.map(field => {
+        const name = escapeHtml(field.name);
+        let control = `<input class="preview-input" placeholder="请输入${name}">`;
+        if (field.type === "单选框" || field.type === "复选框") {
+          const options = field.options.length ? field.options : ["选项1", "选项2", "选项3"];
+          const markerClass = field.type === "复选框" ? "radio-circle square" : "radio-circle";
+          control = `
+            <div class="radio-box">
+              ${options.map(option => `<span class="radio-item"><span class="${markerClass}"></span>${escapeHtml(option)}</span>`).join("")}
+            </div>
+          `;
+        }
+        return `
+          <div class="preview-field">
+            <label>${name}</label>
+            ${control}
+          </div>
+        `;
+      }).join("");
+
+      if (!detail) {
+        els.detailPreview.innerHTML = "";
+        return;
+      }
+
+      const detailFields = detail.fields.filter(field => field.name.trim());
+      if (!detailFields.length) {
+        els.detailPreview.innerHTML = "";
+        return;
+      }
+
+      const rows = Array.from({ length: state.detailRows }, (_, index) => index + 1);
+      els.detailPreview.innerHTML = `
+        <div class="detail-head">
+          <div class="detail-title">${escapeHtml(detail.name)}</div>
+          <div class="detail-actions">
+            <button class="detail-add">＋ 添加</button>
+            <span>↗</span>
+          </div>
+        </div>
+        <table class="detail-table">
+          <colgroup>
+            <col style="width:66px">
+            ${detailFields.map(() => `<col>`).join("")}
+          </colgroup>
+          <thead>
+            <tr>
+              <th><span class="checkbox"></span></th>
+              ${detailFields.map(field => `<th>${escapeHtml(field.name)}</th>`).join("")}
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(index => `
+              <tr>
+                <td>${index}</td>
+                ${detailFields.map(field => `<td><input class="detail-cell-input" placeholder="请输入${escapeHtml(field.name)}"></td>`).join("")}
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+        <div class="detail-pager">
+          <span>共 ${state.detailRows} 条</span>
+          <span>&lt;</span>
+          <strong>1/1</strong>
+          <span>&gt;</span>
+          <span>20条/页</span>
+        </div>
+      `;
+
+      const addButton = els.detailPreview.querySelector(".detail-add");
+      if (addButton) {
+        addButton.addEventListener("click", () => {
+          state.detailRows += 1;
+          renderPreview();
+        });
+      }
+    }
+
+    function confirmCreate() {
+      const name = els.formName.value.trim();
+      if (!name) {
+        els.nameFieldWrap.classList.add("has-error");
+        els.formName.focus();
+        return;
+      }
+      els.nameFieldWrap.classList.remove("has-error");
+      state.formTitle = name;
+      state.detailRows = 1;
+      showToast();
+      setTimeout(() => {
+        closeModal();
+        renderPreview();
+        openPreviewDrawer();
+      }, 1000);
+    }
+
+    els.openCreate.addEventListener("click", openModal);
+    els.closeModal.addEventListener("click", closeModal);
+    els.cancelCreate.addEventListener("click", closeModal);
+    els.confirmCreate.addEventListener("click", confirmCreate);
+    els.closePreview.addEventListener("click", closePreviewDrawer);
+
+    els.formName.addEventListener("input", () => {
+      if (els.formName.value.trim()) {
+        els.nameFieldWrap.classList.remove("has-error");
+      }
+    });
+
+    els.showAddDetail.addEventListener("click", () => {
+      state.addingDetail = true;
+      renderObjects();
+    });
+
+    els.addField.addEventListener("click", () => {
+      const object = getActiveObject();
+      addFieldToObject(object, true);
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && !els.createModal.classList.contains("hidden")) {
+        closeModal();
+      }
+    });
+
+    renderTableRows();
+    renderBuilder();
+  </script>
+</body>
+</html>
