@@ -61,7 +61,7 @@
       height: 51px;
       background: var(--nav);
       color: #fff;
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: space-between;
     }
@@ -186,14 +186,14 @@
     }
 
     .main-layout {
-      height: calc(100vh - 85px);
+      height: calc(100vh - 34px);
       margin-top: 34px;
       display: flex;
     }
 
     .prototype-notice {
       position: fixed;
-      top: 51px;
+      top: 0;
       left: 0;
       right: 0;
       z-index: 35;
@@ -222,21 +222,41 @@
     }
 
     .sidebar {
-      width: 219px;
-      background: var(--nav);
+      width: 197px;
+      background: #223442;
       color: #d9e5e9;
       flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
     }
 
     .side-item {
-      height: 36px;
+      height: 40px;
       display: flex;
       align-items: center;
-      gap: 11px;
-      padding: 0 20px;
+      gap: 10px;
+      padding: 0 8px;
       color: #e6f0f3;
       font-size: 14px;
       position: relative;
+    }
+
+    .side-logo {
+      height: 54px;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 0 22px;
+    }
+
+    .side-icon {
+      width: 17px;
+      height: 17px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #e6f0f3;
+      font-size: 14px;
+      flex-shrink: 0;
     }
 
     .side-item .chev {
@@ -246,7 +266,7 @@
     }
 
     .side-item.active {
-      background: var(--nav-active);
+      background: #1d303d;
       color: #fff;
       font-weight: 600;
     }
@@ -257,18 +277,132 @@
       left: 0;
       top: 0;
       width: 4px;
-      height: 36px;
-      background: #e8f0f3;
+      height: 40px;
+      background: transparent;
     }
 
     .side-group {
-      padding-top: 22px;
+      height: calc(100% - 64px);
+      padding-top: 0;
+      padding-bottom: 88px;
+      overflow: hidden;
+    }
+
+    .side-section-title {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      color: #8ca0ad;
+      font-size: 12px;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+
+    .side-user {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      background: #223442;
+      border-top: 1px solid rgba(255,255,255,.08);
+      color: #fff;
+    }
+
+    .side-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1px solid rgba(255,255,255,.55);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .side-avatar:before {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f5f5f5, #bfc7cc);
+    }
+
+    .side-user-name {
+      font-weight: 700;
+      line-height: 17px;
+    }
+
+    .side-user-sub {
+      max-width: 116px;
+      font-size: 12px;
+      color: #d6e0e5;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .sub-side {
-      height: 34px;
-      padding-left: 46px;
+      height: 40px;
+      padding-left: 20px;
       font-size: 14px;
+    }
+
+    .secondary-sidebar,
+    .module-sidebar {
+      width: 199px;
+      flex-shrink: 0;
+      background: #fff;
+      border-right: 1px solid #d9dee2;
+      overflow: auto;
+    }
+
+    .secondary-title {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 20px;
+      border-bottom: 1px solid #e9edf0;
+      font-weight: 700;
+      color: #263941;
+    }
+
+    .engine-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #0ca152;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .secondary-item,
+    .module-item {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 20px;
+      color: #111;
+      border-left: 3px solid transparent;
+    }
+
+    .secondary-item.active,
+    .module-item.active {
+      background: #f3f3f3;
+      border-left-color: #18313a;
+      font-weight: 700;
+    }
+
+    .module-sidebar {
+      padding-top: 6px;
     }
 
     .content {
@@ -280,8 +414,8 @@
     }
 
     .list-toolbar {
-      height: 51px;
-      padding: 0 16px 0 18px;
+      height: 47px;
+      padding: 0 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -406,10 +540,10 @@
     }
 
     .table-wrap {
-      margin: 13px 16px 0 17px;
+      margin: 0 16px 0 17px;
       background: #fff;
       border: 1px solid #dde2e5;
-      height: calc(100vh - 149px);
+      height: calc(100vh - 82px);
       overflow: hidden;
       position: relative;
     }
@@ -661,7 +795,7 @@
     }
 
     .object-row {
-      height: 34px;
+      height: 40px;
       display: flex;
       align-items: center;
       padding: 0 12px 0 18px;
@@ -683,12 +817,17 @@
     }
 
     .object-row.child {
-      padding-left: 38px;
+      padding-left: 18px;
     }
 
     .object-row .folder {
+      width: 16px;
       color: #60737d;
       font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
 
     .object-name {
@@ -701,13 +840,19 @@
 
     .delete-object {
       display: none;
-      width: 22px;
-      height: 22px;
+      width: 28px;
+      height: 28px;
       border: 0;
       background: transparent;
+      color: #9aa4aa;
+      border-radius: 2px;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .delete-object:hover {
+      background: #fff0f0;
       color: #c03935;
-      font-size: 16px;
-      line-height: 20px;
     }
 
     .object-row:hover .delete-object {
@@ -717,7 +862,7 @@
     }
 
     .inline-add {
-      padding: 8px 12px 8px 38px;
+      padding: 8px 12px 8px 18px;
       display: flex;
       flex-direction: column;
       gap: 7px;
@@ -775,6 +920,25 @@
       overflow: auto;
     }
 
+    .add-field-row {
+      margin-top: 2px;
+      height: 34px;
+      padding: 0 8px;
+      border: 1px dashed #b8c2c8;
+      background: #fff;
+      color: #18313a;
+      border-radius: 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .add-field-hint {
+      margin-left: 8px;
+      color: #9aa4aa;
+      font-size: 11px;
+    }
+
     .field-row-wrap {
       margin-bottom: 8px;
       border: 1px solid var(--line);
@@ -789,7 +953,7 @@
     .field-row {
       min-height: 44px;
       display: grid;
-      grid-template-columns: 32px minmax(180px, 1fr) 190px 38px 64px;
+      grid-template-columns: 32px minmax(180px, 1fr) 190px 38px;
       gap: 9px;
       align-items: center;
       padding: 6px 10px;
@@ -809,26 +973,20 @@
     .delete-btn {
       height: 28px;
       width: 30px;
-      border: 1px solid #e0b6b4;
-      background: #fff;
+      border: 0;
+      background: transparent;
+      color: #9aa4aa;
+      border-radius: 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .delete-btn:hover {
+      background: #fff0f0;
       color: #c03935;
-      border-radius: 2px;
-      font-size: 16px;
-    }
-
-    .move-stack {
-      display: flex;
-      gap: 4px;
-      justify-content: flex-end;
-    }
-
-    .move-btn {
-      width: 28px;
-      height: 28px;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: #52636d;
-      border-radius: 2px;
     }
 
     .option-area {
@@ -944,7 +1102,7 @@
 
     .preview-page {
       position: fixed;
-      top: 85px;
+      top: 34px;
       right: 0;
       bottom: 0;
       left: 0;
@@ -980,7 +1138,7 @@
       background: #fff;
       border-bottom: 1px solid #d8dde1;
       display: flex;
-      align-items: center;
+      align-items: stretch;
       justify-content: space-between;
       padding: 0 16px;
       color: #111;
@@ -1126,6 +1284,7 @@
       background: #f0f2f5;
       border-right: 1px solid #d9dee2;
       padding: 0 16px;
+      min-height: 100%;
     }
 
     .preview-input,
@@ -1139,7 +1298,7 @@
     }
 
     .preview-input {
-      height: 40px;
+      height: 34px;
       padding: 0 12px;
     }
 
@@ -1150,7 +1309,7 @@
     }
 
     .radio-box {
-      height: 34px;
+      height: 40px;
       display: flex;
       align-items: center;
       gap: 22px;
@@ -1298,7 +1457,7 @@
       }
 
       .field-row {
-        grid-template-columns: 28px minmax(120px, 1fr) 140px 34px 60px;
+        grid-template-columns: 28px minmax(120px, 1fr) 140px 34px;
       }
     }
   </style>
@@ -1338,19 +1497,68 @@
     <main class="main-layout">
       <aside class="sidebar">
         <div class="side-group">
-          <div class="side-item"><span>▤</span><span>数据记录</span><span class="chev">›</span></div>
-          <div class="side-item active sub-side">表单列表</div>
-          <div class="side-item sub-side">待填写上报</div>
-          <div class="side-item sub-side">已填写上报</div>
-          <div class="side-item sub-side">关注的上报</div>
-          <div class="side-item"><span>◩</span><span>网上调查</span><span class="chev">⌄</span></div>
-          <div class="side-item"><span>☷</span><span>流程</span><span class="chev">⌄</span></div>
-          <div class="side-item"><span>◈</span><span>投票</span></div>
-          <div class="side-item"><span>◆</span><span>权限申请列表</span></div>
-          <div class="side-item"><span>☞</span><span>上报意见及评论</span></div>
-          <div class="side-item"><span>⌂</span><span>回收站</span></div>
-          <div class="side-item"><span>⚙</span><span>设置</span></div>
+          <div class="side-item side-logo"><span class="side-icon">⬢</span><span>后台管理中心</span></div>
+          <div class="side-item active"><span class="side-icon">■</span><span>所有服务</span><span class="chev">›</span></div>
+          <div class="side-section-title">全局基础</div>
+          <div class="side-item"><span class="side-icon">⚙</span><span>基本设置</span></div>
+          <div class="side-item"><span class="side-icon">⌘</span><span>组织架构设置</span></div>
+          <div class="side-item"><span class="side-icon">▣</span><span>权限管理中心</span></div>
+          <div class="side-item"><span class="side-icon">▦</span><span>应用管理</span></div>
+          <div class="side-section-title">日志中心</div>
+          <div class="side-item"><span class="side-icon">▤</span><span>操作日志</span></div>
+          <div class="side-item"><span class="side-icon">▣</span><span>登录日志</span></div>
+          <div class="side-item"><span class="side-icon">◉</span><span>认证应用日志</span></div>
+          <div class="side-item"><span class="side-icon">☁</span><span>问题处理平台</span></div>
+          <div class="side-section-title">系统管理</div>
+          <div class="side-item"><span class="side-icon">♙</span><span>账号安全</span></div>
+          <div class="side-item"><span class="side-icon">▣</span><span>系统安全</span></div>
+          <div class="side-item"><span class="side-icon">♔</span><span>数据安全</span></div>
+          <div class="side-item"><span class="side-icon">▰</span><span>系统迁入迁出</span></div>
+          <div class="side-section-title">平台引擎</div>
+          <div class="side-item"><span class="side-icon">⌕</span><span>全文搜索引擎</span></div>
+          <div class="side-item"><span class="side-icon">EB</span><span>低代码平台e-builder</span></div>
+          <div class="side-item"><span class="side-icon">▤</span><span>数据加工</span></div>
         </div>
+        <div class="side-user">
+          <div class="side-avatar"></div>
+          <div>
+            <div class="side-user-name">闵瑜婷</div>
+            <div class="side-user-sub">Test表单引擎研发部</div>
+          </div>
+          <span class="chev">›</span>
+        </div>
+      </aside>
+
+      <aside class="secondary-sidebar">
+        <div class="secondary-title"><span class="engine-icon">EB</span><span>表单引擎</span></div>
+        <div class="secondary-item">基础设置</div>
+        <div class="secondary-item active">表单管理</div>
+        <div class="secondary-item">批量维护</div>
+        <div class="secondary-item">字段模板库</div>
+        <div class="secondary-item">样式模板</div>
+        <div class="secondary-item">选项模板</div>
+        <div class="secondary-item">函数库</div>
+        <div class="secondary-item">回收站</div>
+        <div class="secondary-item">多语言维护</div>
+      </aside>
+
+      <aside class="module-sidebar">
+        <div class="module-item">模块列表</div>
+        <div class="module-item active">业务表单</div>
+        <div class="module-item">工作流程</div>
+        <div class="module-item">e-builder表单</div>
+        <div class="module-item">会议管理</div>
+        <div class="module-item">客服</div>
+        <div class="module-item">知识文档</div>
+        <div class="module-item">市场活动</div>
+        <div class="module-item">联系人</div>
+        <div class="module-item">客户</div>
+        <div class="module-item">商机</div>
+        <div class="module-item">产品</div>
+        <div class="module-item">订单</div>
+        <div class="module-item">价格</div>
+        <div class="module-item">合同</div>
+        <div class="module-item">竞争对手</div>
       </aside>
 
       <section class="content">
@@ -1374,12 +1582,11 @@
             <colgroup>
               <col style="width: 52px">
               <col style="width: 38%">
-              <col style="width: 8%">
               <col style="width: 10%">
+              <col style="width: 11%">
               <col style="width: 8%">
-              <col style="width: 12%">
-              <col style="width: 8%">
-              <col style="width: 18%">
+              <col style="width: 14%">
+              <col style="width: 19%">
             </colgroup>
             <thead>
               <tr>
@@ -1389,7 +1596,6 @@
                 <th>创建日期</th>
                 <th>启用</th>
                 <th>表单类型</th>
-                <th>类型</th>
                 <th>数据库表名称</th>
               </tr>
             </thead>
@@ -1420,10 +1626,6 @@
           <div id="previewFormTitle" class="preview-form-title">表单预览</div>
         </div>
         <div class="preview-actions">
-          <button class="preview-action-btn primary">保存</button>
-          <button class="preview-action-btn">保存并新建</button>
-          <button class="preview-action-btn">暂存</button>
-          <button class="preview-icon-btn" title="最大化">↗</button>
           <button id="closePreview" class="preview-icon-btn" aria-label="关闭预览">×</button>
         </div>
       </header>
@@ -1459,15 +1661,13 @@
           <aside class="object-panel">
             <div class="panel-head">
               <span>数据对象</span>
-              <button id="showAddDetail" class="mini-btn" title="新增明细表">+</button>
             </div>
             <div id="objectList" class="object-list"></div>
           </aside>
 
           <section class="fields-panel">
             <div class="fields-head">
-              <div id="fieldsTitle" class="fields-title">主表字段 1</div>
-              <button id="addField" class="btn btn-primary">+ 新增字段</button>
+              <div id="fieldsTitle" class="fields-title">主表（1）</div>
             </div>
             <div id="fieldList" class="field-list"></div>
           </section>
@@ -1480,7 +1680,7 @@
     </div>
   </div>
 
-  <div id="toast" class="toast hidden">新建成功，可开始使用表单</div>
+  <div id="toast" class="toast hidden">新建成功，正在为您打开默认布局预览...</div>
 
   <script>
     const optionTypes = ["单选框", "复选框"];
@@ -1504,23 +1704,21 @@
     };
 
     const sampleRows = [
-      ["新建表单测试", "闵瑜婷", "2026-05-27", true, "自定义独立表", "协作表", "ft_xjbdcs"],
-      ["函数公式2", "谢凯薇", "2026-05-27", true, "自定义独立表", "协作表", "ft_hsgs2"],
-      ["字段显示格式-单元格生效各种类型", "张伟", "2026-05-26", true, "自定义独立表", "协作表", "ft_1273848108620775424"],
-      ["明细表字段嵌套子级明细表需求2", "闵瑜婷", "2026-05-26", true, "自定义独立表", "协作表", "ft_mxzbdqtzjmxbxq2"],
-      ["新增【表单标题】、【布局标题】系统参数", "罗宝兰", "2026-05-26", true, "自定义独立表", "协作表", "ft_xzbdbtbjbtztcs"],
-      ["明细表字段内嵌明细表需求", "闵瑜婷", "2026-05-26", true, "自定义独立表", "协作表", "ft_mxzbdnqmxbxq"],
-      ["函数公式", "谢凯薇", "2026-05-26", true, "自定义独立表", "协作表", "ft_hsgs"],
-      ["表格式分组", "闵瑜婷", "2026-05-26", true, "自定义独立表", "协作表", "ft_bgsfz"],
-      ["日常费用报销单1779764657441", "闵瑜婷", "2026-05-26", true, "自定义独立表", "协作表", "ft_1273735503116738560"],
-      ["明细表空行验证", "闵瑜婷", "2026-05-26", true, "自定义独立表", "协作表", "ft_mxbkxyz"],
-      ["0601基线各项优化测试", "罗宝兰", "2026-05-26", true, "自定义独立表", "协作表", "ft_jxgxyhcs"],
-      ["字段显示格式而且excel历史数据", "赵沁", "2026-05-25", true, "自定义独立表", "协作表", "ft_zdxsgseqexclssj"],
-      ["明细表嵌套+行内展示行工具栏列合并问题", "罗宝兰", "2026-05-25", false, "自定义独立表", "协作表", "ft_mxbqtnzsxgjlhbwt"],
-      ["浏览数据定义问题复现", "马佰潇", "2026-05-25", true, "自定义独立表", "协作表", "ft_ljsjdywtfx"],
-      ["设置文本框边框，移动菜单选、复选框无需显示文本框", "罗宝兰", "2026-05-22", false, "自定义独立表", "协作表", "ft_szwbkbkyddddxfxkxxx..."],
-      ["导出HTML-行政区域", "郭文昌", "2026-05-21", true, "自定义独立表", "协作表", "ft_dchtmxzqy"],
-      ["验证新版函数编辑器问题", "谢凯薇", "2026-05-21", true, "自定义独立表", "协作表", "ft_yzxbhsbjqwt"]
+      ["新建表单验证2", "闵瑜婷", "2026-05-28", true, "自定义独立表", "abxjbdyz2"],
+      ["新建表单流程简化", "闵瑜婷", "2026-05-28", true, "自定义独立表", "abxjbdlcjh"],
+      ["上报引用上报0525_1", "张伟", "2026-05-25", true, "虚拟表", "ab_1269377520..."],
+      ["明细表测试0525", "罗宝兰", "2026-05-25", true, "自定义独立表", "abmxbcs0525"],
+      ["字段联动赋值附件文档", "李鹏-上海", "2026-05-23", true, "自定义独立表", "abzdldfzfuja"],
+      ["明细表导入最大行数11", "罗宝兰", "2026-05-22", true, "自定义独立表", "abmxbdrzdxs"],
+      ["明细表移动端显示序号和check独立设置", "罗宝兰", "2026-05-22", true, "自定义独立表", "abmxbwyddxsxhh..."],
+      ["字段联动明细触发日志记录", "李鹏-上海", "2026-05-22", true, "自定义独立表", "abzdldmxcfrzjl"],
+      ["调查问卷二开需求评估1779330964690", "闵瑜婷", "2026-05-21", true, "自定义独立表", "abft_127187281..."],
+      ["国家省份城市字段", "闵瑜婷", "2026-05-20", true, "自定义独立表", "abgjsfcszd"],
+      ["显示属性联动换行2", "谢凯薇", "2026-05-19", true, "自定义独立表", "abxssxldhx2"],
+      ["显示属性联动函数换行", "谢凯薇", "2026-05-18", true, "自定义独立表", "abxssxldhshx"],
+      ["新增明细表列筛选功能2", "罗宝兰", "2026-05-18", false, "自定义独立表", "abxzmxblsxgn2"],
+      ["城市-0515", "程冲", "2026-05-15", true, "自定义独立表", "abcs0515"],
+      ["多运算卡死问题", "郭文昌", "2026-05-15", true, "自定义独立表", "abdyskswt"]
     ];
 
     const els = {
@@ -1535,8 +1733,6 @@
       objectList: document.getElementById("objectList"),
       fieldList: document.getElementById("fieldList"),
       fieldsTitle: document.getElementById("fieldsTitle"),
-      showAddDetail: document.getElementById("showAddDetail"),
-      addField: document.getElementById("addField"),
       toast: document.getElementById("toast"),
       listPage: document.getElementById("listPage"),
       previewPage: document.getElementById("previewPage"),
@@ -1574,10 +1770,31 @@
           <td>${escapeHtml(row[2])}</td>
           <td><span class="switch ${row[3] ? "" : "off"}"></span></td>
           <td>${escapeHtml(row[4])}</td>
-          <td>${escapeHtml(row[5])}</td>
-          <td title="${escapeHtml(row[6])}">${escapeHtml(row[6])}</td>
+          <td title="${escapeHtml(row[5])}">${escapeHtml(row[5])}</td>
         </tr>
       `).join("");
+    }
+
+    function formatToday() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function makeTableName(name) {
+      const code = name
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "")
+        .slice(0, 8);
+      return `ab_${code || Math.random().toString(36).slice(2, 8)}`;
+    }
+
+    function addCreatedFormToList(name) {
+      sampleRows.unshift([name, "管理员", formatToday(), true, "自定义独立表", makeTableName(name)]);
+      renderTableRows();
     }
 
     function renderObjects() {
@@ -1586,9 +1803,6 @@
       let html = `
         <div class="object-row ${state.activeObjectId === main.id ? "active" : ""}" data-id="${main.id}">
           <span class="folder">▣</span><span class="object-name">${escapeHtml(main.name)}</span>
-        </div>
-        <div class="object-row" style="cursor:default;">
-          <span class="folder">▾</span><span class="object-name">明细表</span>
         </div>
       `;
 
@@ -1610,6 +1824,12 @@
           </div>
         `;
       }
+
+      html += `
+        <div id="showAddDetail" class="object-row">
+          <span class="folder">+</span><span class="object-name">新建明细表</span>
+        </div>
+      `;
 
       els.objectList.innerHTML = html;
       els.objectList.querySelectorAll(".object-row[data-id]").forEach(row => {
@@ -1654,6 +1874,14 @@
           renderObjects();
         });
       }
+
+      const showAddDetail = document.getElementById("showAddDetail");
+      if (showAddDetail) {
+        showAddDetail.addEventListener("click", () => {
+          state.addingDetail = true;
+          renderObjects();
+        });
+      }
     }
 
     function addDetailObject() {
@@ -1695,10 +1923,11 @@
     function renderFields() {
       const object = getActiveObject();
       const count = object.fields.length;
-      els.fieldsTitle.textContent = object.kind === "main" ? `主表字段 ${count}` : `明细表：${object.name} ${count}`;
+      els.fieldsTitle.textContent = `${object.name}（${count}）`;
 
       if (!count) {
-        els.fieldList.innerHTML = `<div class="empty-tip">暂无字段，点击右上角“+ 新增字段”开始配置</div>`;
+        els.fieldList.innerHTML = `<div class="empty-tip">暂无字段，点击下方“+ 新建字段”开始配置</div><button id="addFieldInline" class="add-field-row">+ 新建字段</button><span class="add-field-hint">（回车也可新建）</span>`;
+        bindAddFieldInline(object);
         return;
       }
 
@@ -1729,17 +1958,21 @@
                 ${typeOptions}
               </select>
               <button class="delete-btn" data-field-id="${field.id}" title="删除字段">×</button>
-              <div class="move-stack">
-                <button class="move-btn" data-move="up" data-field-id="${field.id}" title="上移" ${index === 0 ? "disabled" : ""}>↑</button>
-                <button class="move-btn" data-move="down" data-field-id="${field.id}" title="下移" ${index === object.fields.length - 1 ? "disabled" : ""}>↓</button>
-              </div>
             </div>
             ${optionsArea}
           </div>
         `;
-      }).join("");
+      }).join("") + `<button id="addFieldInline" class="add-field-row">+ 新建字段</button><span class="add-field-hint">（回车也可新建）</span>`;
 
+      bindAddFieldInline(object);
       bindFieldEvents();
+    }
+
+    function bindAddFieldInline(object) {
+      const addFieldInline = document.getElementById("addFieldInline");
+      if (addFieldInline) {
+        addFieldInline.addEventListener("click", () => addFieldToObject(object, true));
+      }
     }
 
     function bindFieldEvents() {
@@ -1751,11 +1984,17 @@
           if (field) field.name = input.value;
         });
         input.addEventListener("keydown", event => {
-          if (event.key !== "Enter" || !input.value.trim()) return;
+          if (event.key !== "Enter") return;
           event.preventDefault();
           const field = object.fields.find(item => item.id === input.dataset.fieldId);
           if (field) field.name = input.value;
-          addFieldToObject(object, true);
+          const inputs = Array.from(els.fieldList.querySelectorAll(".field-name"));
+          const index = inputs.indexOf(input);
+          if (index >= 0 && index < inputs.length - 1) {
+            inputs[index + 1].focus();
+          } else {
+            addFieldToObject(object, true);
+          }
         });
       });
 
@@ -1781,22 +2020,28 @@
         });
       });
 
-      els.fieldList.querySelectorAll(".move-btn").forEach(button => {
-        button.addEventListener("click", () => {
-          const index = object.fields.findIndex(item => item.id === button.dataset.fieldId);
-          const targetIndex = button.dataset.move === "up" ? index - 1 : index + 1;
-          if (index < 0 || targetIndex < 0 || targetIndex >= object.fields.length) return;
-          const [field] = object.fields.splice(index, 1);
-          object.fields.splice(targetIndex, 0, field);
-          renderFields();
-        });
-      });
-
       els.fieldList.querySelectorAll(".option-input").forEach(input => {
         input.addEventListener("input", () => {
           const field = object.fields.find(item => item.id === input.dataset.fieldId);
           if (!field) return;
           field.options[Number(input.dataset.optionIndex)] = input.value;
+        });
+        input.addEventListener("keydown", event => {
+          if (event.key !== "Enter") return;
+          event.preventDefault();
+          const field = object.fields.find(item => item.id === input.dataset.fieldId);
+          if (!field) return;
+          field.options[Number(input.dataset.optionIndex)] = input.value;
+          const inputs = Array.from(els.fieldList.querySelectorAll(`.option-input[data-field-id="${input.dataset.fieldId}"]`));
+          const index = inputs.indexOf(input);
+          if (index >= 0 && index < inputs.length - 1) {
+            inputs[index + 1].focus();
+          } else {
+            field.options.push(`选项${field.options.length + 1}`);
+            renderFields();
+            const nextInputs = Array.from(els.fieldList.querySelectorAll(`.option-input[data-field-id="${field.id}"]`));
+            if (nextInputs.length) nextInputs[nextInputs.length - 1].focus();
+          }
         });
       });
 
@@ -1889,7 +2134,7 @@
       const main = state.objects.find(item => item.kind === "main");
       const detail = state.objects.find(item => item.kind === "detail");
       const fields = main.fields.filter(field => field.name.trim());
-      els.previewFormTitle.textContent = state.formTitle || "表单预览";
+      els.previewFormTitle.textContent = "表单预览";
       els.previewInnerTitle.textContent = state.formTitle || "表单预览";
 
       els.generatedForm.innerHTML = fields.map(field => {
@@ -1929,7 +2174,6 @@
           <div class="detail-title">${escapeHtml(detail.name)}</div>
           <div class="detail-actions">
             <button class="detail-add">＋ 添加</button>
-            <span>↗</span>
           </div>
         </div>
         <table class="detail-table">
@@ -1980,6 +2224,7 @@
       els.nameFieldWrap.classList.remove("has-error");
       state.formTitle = name;
       state.detailRows = 1;
+      addCreatedFormToList(name);
       showToast();
       setTimeout(() => {
         closeModal();
@@ -1993,21 +2238,19 @@
     els.cancelCreate.addEventListener("click", closeModal);
     els.confirmCreate.addEventListener("click", confirmCreate);
     els.closePreview.addEventListener("click", closePreviewDrawer);
+    els.previewPage.addEventListener("click", event => {
+      if (event.target === els.previewPage) {
+        closePreviewDrawer();
+      }
+    });
+    document.querySelector(".preview-drawer").addEventListener("click", event => {
+      event.stopPropagation();
+    });
 
     els.formName.addEventListener("input", () => {
       if (els.formName.value.trim()) {
         els.nameFieldWrap.classList.remove("has-error");
       }
-    });
-
-    els.showAddDetail.addEventListener("click", () => {
-      state.addingDetail = true;
-      renderObjects();
-    });
-
-    els.addField.addEventListener("click", () => {
-      const object = getActiveObject();
-      addFieldToObject(object, true);
     });
 
     document.addEventListener("keydown", event => {
